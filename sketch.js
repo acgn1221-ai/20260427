@@ -50,7 +50,34 @@ function draw() {
   if (hands.length > 0) {
     for (let hand of hands) {
       if (hand.confidence > 0.1) {
-        // 遍歷關鍵點產生火焰粒子
+        // 定義手指關鍵點區段
+        let fingerSegments = [
+          [0, 1, 2, 3, 4],     // 大拇指
+          [5, 6, 7, 8],        // 食指
+          [9, 10, 11, 12],     // 中指
+          [13, 14, 15, 16],    // 無名指
+          [17, 18, 19, 20]     // 小指
+        ];
+
+        // 畫出手指連線
+        stroke(255, 200); // 半透明白色線條
+        strokeWeight(3);
+        for (let segment of fingerSegments) {
+          for (let j = 0; j < segment.length - 1; j++) {
+            let kp1 = hand.keypoints[segment[j]];
+            let kp2 = hand.keypoints[segment[j + 1]];
+
+            // 座標映射
+            let x1 = map(kp1.x, 0, video.width, displayX, displayX + displayW);
+            let y1 = map(kp1.y, 0, video.height, displayY, displayY + displayH);
+            let x2 = map(kp2.x, 0, video.width, displayX, displayX + displayW);
+            let y2 = map(kp2.y, 0, video.height, displayY, displayY + displayH);
+
+            line(x1, y1, x2, y2);
+          }
+        }
+
+        // 遍歷所有關鍵點產生火焰粒子
         for (let i = 0; i < hand.keypoints.length; i++) {
           let keypoint = hand.keypoints[i];
           
