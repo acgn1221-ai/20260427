@@ -84,16 +84,16 @@ function draw() {
           }
         }
 
-        // 遍歷所有關鍵點產生火焰粒子
-        for (let i = 0; i < hand.keypoints.length; i++) {
+        // 只在指尖（4, 8, 12, 16, 20）產生旺盛的火焰粒子
+        let fingertips = [4, 8, 12, 16, 20];
+        for (let i of fingertips) {
           let keypoint = hand.keypoints[i];
           
-          // 將原始影像座標映射到畫布上顯示影像的區域
           let mappedX = map(keypoint.x, 0, video.width, displayX, displayX + displayW);
           let mappedY = map(keypoint.y, 0, video.height, displayY, displayY + displayH);
 
-          // 每一幀在每個關鍵點產生 2 個粒子
-          for (let n = 0; n < 2; n++) {
+          // 增加產生數量（5個）以達到旺盛效果
+          for (let n = 0; n < 5; n++) {
             particles.push(new Particle(mappedX, mappedY));
           }
         }
@@ -116,10 +116,15 @@ class Particle {
   constructor(x, y) {
     this.x = x;
     this.y = y;
-    this.vx = random(-1, 1);
-    this.vy = random(-4, -1); // 向上飄
+    this.vx = random(-1.5, 1.5);
+    this.vy = random(-7, -2); // 向上飄得更高更快，營造旺盛感
     this.alpha = 255;
-    this.r = random(8, 20);
+    this.r = random(10, 25); // 粒子直徑加大
+    
+    // 使用指定的漸層色系：03045e-023e8a-0077b6-0096c7
+    let palette = ["#03045e", "#023e8a", "#0077b6", "#0096c7"];
+    let colHex = random(palette);
+    this.col = color(colHex);
   }
 
   finished() {
@@ -129,14 +134,14 @@ class Particle {
   update() {
     this.x += this.vx;
     this.y += this.vy;
-    this.alpha -= 10; // 消失速度
-    this.r -= 0.5;    // 逐漸變小
+    this.alpha -= 7; // 稍微減慢消失速度，讓火焰更長
+    this.r -= 0.4;   // 逐漸變小
   }
 
   show() {
     noStroke();
-    // 藍色火焰色調 (0, 100, 255) 到 (0, 255, 255)
-    fill(0, random(100, 200), 255, this.alpha);
+    let c = this.col;
+    fill(red(c), green(c), blue(c), this.alpha);
     circle(this.x, this.y, this.r);
   }
 }
