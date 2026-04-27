@@ -45,6 +45,13 @@ function draw() {
   // 畫出攝像頭影像
   image(video, displayX, displayY, displayW, displayH);
 
+  // 在影像上方中間加上文字
+  fill(0); // 設定文字顏色為黑色
+  noStroke();
+  textSize(24);
+  textAlign(CENTER, BOTTOM);
+  text("414730506 張怡婕", displayX + displayW / 2, displayY - 10);
+
   blendMode(ADD);
   // Ensure at least one hand is detected
   if (hands.length > 0) {
@@ -60,7 +67,7 @@ function draw() {
         ];
 
         // 畫出手指連線
-        stroke(255, 200); // 半透明白色線條
+        stroke(0, 150, 255); // 亮藍色發光線條
         strokeWeight(3);
         for (let segment of fingerSegments) {
           for (let j = 0; j < segment.length - 1; j++) {
